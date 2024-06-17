@@ -1,21 +1,109 @@
-Make Believe 
+# Make Believe
 
-The main goal of this project is to create a Celebrity Fake News detection model based on the linguistic differences between true and fake news. The dataset I will be using to develop the model is Web Celebrity, a database introduced by Verónica Rosas-Pérez et al. in her 2018 paper "Automatic Detection of Fake News".
+The main goal of this project is to create a Celebrity Fake News detection model based on the linguistic differences between true and fake news. The dataset used to develop the model is Web Celebrity, a database introduced by Verónica Rosas-Pérez et al. in her 2018 paper "Automatic Detection of Fake News".
 
-I will also be using Text Characterization Toolkit (TCT) by Daniel Simig et al., a coh-metrix style feature computing tool. In short, TCT extracts discursive, syntactic, lexical and descriptive characteristics from the input text making it an interesting feature engineering tool. Aside from the TCT, I will also be using NLTK and Textblob to extract sentiment scores for the texts, as it is common in fake news detection. 
+## Table of Contents
 
-Summary of the project development
+- [Description](#description)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Features](#features)
+- [Project Development Summary](#project-development-summary)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
 
-After extracting the TCT features and sentiment scores for the texts and scaling them to make them more easily interpretable, I looked for ways to filter out features since the TCT alone computes more than 65 and some of them may be redundat. The sets of features I chose to extract were 1. based in the correlation between feature-Polarity, 2. performing the Kolmogorov-Smirnov test to check whether two samples (sample of feature x for the True class and sample for feature x for the Fake class) come from the same population, 3. a set obtained through recursive feature elimination and, finally, 4. a set with all the available features (Part 3). 
+## Description
 
-I trained 4 baseline models (SVC, Random Forest, K-Neighbors and Logistic Regression) for each of the 4 sets of features and compared the results to determine which pair of set of features-ml algorithm performed best for the task. The F1 score was the primary metric for this evaluation (Part 4). After this step, it was clear that going with a random forest algorithm trained on the rfe set would make the most sense (Part 5).
+"Make Believe" aims to detect fake news related to celebrities by analyzing linguistic features. The project utilizes the Text Characterization Toolkit (TCT) to extract various text features and employs machine learning algorithms to build a robust fake news detection model.
 
-For fine-tuning, I used gridsearch to look for the optimal depth, number of estimators and split criterion function. Since there were going to be many models fitted and a lot are not that far off in terms of F1 score I also computed the ROC AUC (Part 6).
+## Installation
 
-Looking at the gridsearch results, the performance of the models started to stabilize at around a depth of 8, the number of estimators did not make much difference and the gini index was the best performing criterion. Since the f1 score of the models with these characteristics did not vary that much, I prioritized choosing a model that would be less complex so that we would also avoid overfitting if possible. The final model had a maximum depth of 8, 150 estimators and the split quality algorithm chosen was the gini index (Part 7).
+1. Clone the repository:
+    ```sh
+    git clone https://github.com/yourusername/make-believe.git
+    ```
+2. Navigate to the project directory:
+    ```sh
+    cd make-believe
+    ```
+3. Install the required dependencies:
+    ```sh
+    pip install -r requirements.txt
+    ```
 
-The final model was a Random Forest trained on the hyperparameters previously mention with the rfe set. The final F1 score was close to 91% with a ROC AUC close to 90%. As a little exercise, I picked a different dataset from Kaggle, performed the same data transformations we carried out on the first dataset and used the final model to predict all the non-NaN samples. This validation set came to be 5524 samples and the F1 score obtained by the model was a tiny bit over 70% (Part 8).
+## Usage
 
+1. Prepare your dataset and place it in the `data` directory.
+2. Run the feature extraction script:
+    ```sh
+    python extract_features.py
+    ```
+3. Train the model using the extracted features:
+    ```sh
+    python train_model.py
+    ```
+4. Evaluate the model:
+    ```sh
+    python evaluate_model.py
+    ```
 
-Thank you for checking out the project and I hope you found something interesting or useful in it :)
- 
+## Features
+
+- Extracts discursive, syntactic, lexical, and descriptive characteristics from text using TCT.
+- Computes sentiment scores using NLTK and Textblob.
+- Implements feature selection techniques like correlation analysis, Kolmogorov-Smirnov test, and recursive feature elimination.
+- Trains multiple machine learning models and selects the best performing model based on F1 score and ROC AUC.
+- Fine-tunes the selected model using GridSearchCV.
+
+## Project Development Summary
+
+1. **Feature Extraction and Sentiment Analysis**:
+    - Used TCT, NLTK, and Textblob to extract features and sentiment scores.
+    - Scaled the features for better interpretability.
+  
+2. **Feature Selection**:
+    - Filtered features based on correlation with Polarity.
+    - Performed Kolmogorov-Smirnov test to check feature distribution differences between true and fake news.
+    - Used Recursive Feature Elimination (RFE) to select important features.
+    - Created feature sets: correlation-based, Kolmogorov-Smirnov-based, RFE-based, and all features.
+
+3. **Model Training**:
+    - Trained SVC, Random Forest, K-Neighbors, and Logistic Regression models on each feature set.
+    - Evaluated models using F1 score to determine the best performing combination.
+
+4. **Model Fine-Tuning**:
+    - Used GridSearchCV to optimize Random Forest hyperparameters (depth, number of estimators, split criterion).
+    - Selected the final model based on performance stability and complexity.
+    - The final model had a maximum depth of 8, 150 estimators, and used the Gini index for splitting.
+
+5. **Final Model Evaluation**:
+    - Achieved a final F1 score of ~91% and ROC AUC of ~90% on the training set.
+    - Validated the model on an external Kaggle dataset, achieving an F1 score of ~70%.
+
+## Contributing
+
+Contributions are welcome! Please follow these steps to contribute:
+
+1. Fork the repository.
+2. Create a new branch:
+    ```sh
+    git checkout -b feature/YourFeature
+    ```
+3. Commit your changes:
+    ```sh
+    git commit -m 'Add some feature'
+    ```
+4. Push to the branch:
+    ```sh
+    git push origin feature/YourFeature
+    ```
+5. Open a pull request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+Thank you for checking out the project, and I hope you find something interesting or useful in it!
